@@ -29,13 +29,13 @@ seed(1)
 # Input file containing one word per line, and its encoding
 # Assumes one word per line but if the the words are followed by 
 # a space, a tab, a slash, a comma, etc....the end of the line will be trimmed
-dic_file = r"data/HU.txt"
+dic_file = r"data/SE.txt"
 encoding = "ISO-8859-1"
 
 # Name of the output binary matrix, matrix image file and output txt file
-count_file = r"count_HU.bin"
-proba_matrix = r"matrix_HU.png"
-outfile = r"output_HU.txt"
+count_file = r"count_SE.bin"
+proba_matrix = r"matrix_SE.png"
+outfile = r"output_SE.txt"
 
 # For the random generator : what is the minimum and maximum number of letters
 # in the words that we want to generate, and how many words for each length
@@ -68,13 +68,23 @@ count.tofile(count_file)
 
 ###############################################################################
 
+# Genrate Matrix probability
+# =======
+def MatProb(count):
+    count2D=count.sum(axis=0)
+    MP=count2D.astype('float')/np.tile(sum(count2D.T),(256,1)).T
+    MP[np.isnan(p2D)] = 0
+    return MP
+
+###############################################################################
+
 # 2D plot
 # =======
 
 # This is an optional 2D plot showing bigram probabilities
 # We have to do a partial sum on the 3D matrix to go fro trigram to bigram
-
 count2D=count.sum(axis=0)
+
 p2D=count2D.astype('float')/np.tile(sum(count2D.T),(256,1)).T
 p2D[np.isnan(p2D)] = 0
 
@@ -93,6 +103,8 @@ for i in range(97,123):
     plt.text(i-97,-1,chr(i),horizontalalignment='center',
                             verticalalignment='center')
 plt.savefig(proba_matrix)
+
+p2DaSE=MatProb(count)[97:123,97:123]
 
 ###############################################################################
 
@@ -123,5 +135,5 @@ for size in range(smin, smax + 1):
             if res[:-1] in dico:
                 x=res[:-1]+"*"
             total += 1
-            f.write(x+"\n")
+            f.write(x+" \n")
 f.close()
